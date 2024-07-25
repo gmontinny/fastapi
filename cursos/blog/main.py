@@ -1,28 +1,30 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Response
+from fastapi.openapi.utils import get_openapi
 from random import randrange
 from database import my_list, find_post, find_index_post
+from openapi import CustomOpenApi
 from schemas import Post
 
 app = FastAPI()
 
 @app.get("/posts")
-def get_all_posts():
+async def get_all_posts():
     return {"data": my_list}
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: Post):
+async def create_post(post: Post):
     post_dict = post.dict()
     post_dict["id"] = randrange(0, 1000000)
     my_list.append(post_dict)
     return {"data": post_dict}
 
 @app.get("/posts/latest")
-def get_latest_post():
+async def get_latest_post():
     post = my_list[-1]
     return {"post_detail": post}
 
 @app.get("/posts/{id}")
-def get_post_by_id(id: int):
+async def get_post_by_id(id: int):
     post = find_post(id)
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -30,7 +32,7 @@ def get_post_by_id(id: int):
     return {"post_detail": post}
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int):
+async def delete_post(id: int):
     indx = find_index_post(id)
     if indx is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -39,7 +41,7 @@ def delete_post(id: int):
     return {"message": f"Post with ID {id} successfully deleted"}
 
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post):
+async def update_post(id: int, post: Post):
     indx = find_index_post(id)
     if indx is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -48,3 +50,6 @@ def update_post(id: int, post: Post):
     post_dict['id'] = id
     my_list[indx] = post_dict
     return {"message": f"Post with ID {id} successfully updated"}
+
+custom_schema = CustomOpenApi(app)
+custom_schema.custom_openapi()
