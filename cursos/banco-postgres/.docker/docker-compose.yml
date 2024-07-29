@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+    api:
+        build:
+          context: ../
+          dockerfile: Dockerfile
+        volumes:
+            - ../:/app
+        ports:
+            - "8000:8000"
+        depends_on:
+            -   postgres
+    postgres:
+        container_name: postgr
+        image: postgres:14.2-alpine
+        environment:
+            - POSTGRES_DB=fastapi_test_db
+            - POSTGRES_PASSWORD=fastapi_test_password
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+        ports:
+            - "5433:5432"
+
+volumes:
+  postgres_data:
+
+
+
+
