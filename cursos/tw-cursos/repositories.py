@@ -1,3 +1,6 @@
+from typing import Any, Sequence
+
+from sqlalchemy import Row, text
 from sqlalchemy.orm import Session
 
 from models import Curso
@@ -7,6 +10,12 @@ class CursoRepository:
     @staticmethod
     def find_all(db: Session) -> list[Curso]:
         return db.query(Curso).all()
+
+    @staticmethod
+    def find_query(db: Session) -> Sequence[Row[Any]]:
+        conn = db.connection()
+        return conn.execute(text("SELECT * FROM cursos")).fetchall()
+
 
     @staticmethod
     def save(db: Session, curso: Curso) -> Curso:
