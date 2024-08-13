@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Response
-from fastapi.openapi.utils import get_openapi
 from random import randrange
+
+from fastapi import FastAPI, HTTPException, status
 from database import my_list, find_post, find_index_post
 from openapi import CustomOpenApi
 from schemas import Post
