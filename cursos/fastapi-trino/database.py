@@ -6,7 +6,7 @@ from settings import Settings
 
 settings = Settings()
 
-SQLALCHEMY_DATABASE_URL = f"""trino://{settings.USER}:{settings.PASSWORD}@{settings.HOST}:{settings.PORT}/{settings.CATALOG}/{settings.SHEMA}"""
+SQLALCHEMY_DATABASE_URL = f"""trino://{settings.USER}:{settings.PASSWORD}@{settings.HOST}:{settings.PORT}/{settings.CATALOG}/{settings.SCHEMA}"""
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL,
    connect_args={
